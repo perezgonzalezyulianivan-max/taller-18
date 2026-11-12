@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+          content="Taller 18: Sistema de reservas y citas. Programación Web Creativa II, Universidad de Caldas.">
+    <title>Taller 18 · Sistema de Reservas y Citas</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <a class="saltar-contenido" href="#contenido">Saltar al contenido principal</a>
+
+    <!-- ENCABEZADO Y MENÚ DE NAVEGACIÓN -->
+    <header class="encabezado">
+        <div class="contenedor encabezado__interior">
+            <a class="marca" href="#inicio" aria-label="Centro Médico Aurora, ir al inicio">
+                <span class="marca__icono" aria-hidden="true">+</span>
+                <span class="marca__texto">
+                    <strong>Centro Médico Aurora</strong>
+                    <small>Sistema de reservas y citas</small>
+                </span>
+            </a>
+            <button class="menu-boton" id="botonMenu" type="button"
+                    aria-expanded="false" aria-controls="menuPrincipal">Menú</button>
+            <nav class="menu" id="menuPrincipal" aria-label="Navegación principal">
+                <ul class="menu__lista">
+                    <li><a href="#dashboard">Dashboard</a></li>
+                    <li><a href="#calendario">Calendario</a></li>
+                    <li><a href="#nueva-reserva">Reservas</a></li>
+                    <li><a href="#listado">Listado</a></li>
+                    <li><a href="#clientes">Clientes</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main id="contenido" class="contenedor">
+
+        <!-- PRESENTACIÓN -->
+        <section class="hero" id="inicio" aria-labelledby="tituloHero">
+            <div class="hero__texto">
+                <p class="hero__etiqueta">Taller 18 · Nivel avanzado</p>
+                <h1 id="tituloHero">Gestión profesional de citas y reservas</h1>
+                <p>
+                    Registre clientes, consulte la disponibilidad en el calendario y administre
+                    sus citas de 8:00 a. m. a 5:00 p. m. en intervalos de 30 minutos.
+                </p>
+            </div>
+            <div class="hero__acciones">
+                <button class="boton boton--blanco" id="botonDatosEjemplo" type="button">
+                    Cargar datos de ejemplo
+                </button>
+                <button class="boton boton--contorno" id="botonBorrarDatos" type="button">
+                    Borrar todos los datos
+                </button>
+            </div>
+        </section>
+
+        <!-- DASHBOARD -->
+        <section class="seccion" id="dashboard" aria-labelledby="tituloDashboard">
+            <h2 class="seccion__titulo" id="tituloDashboard">Dashboard</h2>
+            <div class="estadisticas">
+                <article class="tarjeta-estadistica tarjeta-estadistica--total">
+                    <span class="tarjeta-estadistica__etiqueta">Total de citas</span>
+                    <strong class="tarjeta-estadistica__valor" id="totalCitas">0</strong>
+                </article>
+                <article class="tarjeta-estadistica tarjeta-estadistica--hoy">
+                    <span class="tarjeta-estadistica__etiqueta">Citas de hoy</span>
+                    <strong class="tarjeta-estadistica__valor" id="citasHoy">0</strong>
+                </article>
+                <article class="tarjeta-estadistica tarjeta-estadistica--pendiente">
+                    <span class="tarjeta-estadistica__etiqueta">Pendientes</span>
+                    <strong class="tarjeta-estadistica__valor" id="citasPendientes">0</strong>
+                </article>
+                <article class="tarjeta-estadistica tarjeta-estadistica--confirmada">
+                    <span class="tarjeta-estadistica__etiqueta">Confirmadas</span>
+                    <strong class="tarjeta-estadistica__valor" id="citasConfirmadas">0</strong>
+                </article>
+                <article class="tarjeta-estadistica tarjeta-estadistica--cancelada">
+                    <span class="tarjeta-estadistica__etiqueta">Canceladas</span>
+                    <strong class="tarjeta-estadistica__valor" id="citasCanceladas">0</strong>
+                </article>
+            </div>
+        </section>
+
+        <!-- CALENDARIO Y PANEL DEL DÍA -->
+        <section class="seccion" id="calendario" aria-labelledby="tituloCalendario">
+            <h2 class="seccion__titulo" id="tituloCalendario">Calendario de citas</h2>
+            <div class="rejilla-principal">
+
+                <article class="panel calendario">
+                    <div class="calendario__barra">
+                        <button class="boton boton--icono" id="botonMesAnterior" type="button"
+                                aria-label="Mes anterior">&#8249;</button>
+                        <h3 class="calendario__titulo" id="tituloMes" aria-live="polite">Mes</h3>
+                        <button class="boton boton--icono" id="botonMesSiguiente" type="button"
+                                aria-label="Mes siguiente">&#8250;</button>
+                        <button class="boton boton--secundario" id="botonHoy" type="button">Hoy</button>
+                    </div>
+                    <div class="calendario__rejilla" id="rejillaCalendario"></div>
+                    <ul class="leyenda" aria-label="Leyenda del calendario">
+                        <li><span class="punto punto--confirmada"></span> Confirmada</li>
+                        <li><span class="punto punto--pendiente"></span> Pendiente</li>
+                        <li><span class="punto punto--cancelada"></span> Cancelada</li>
+                        <li><span class="leyenda__hoy"></span> Hoy</li>
+                    </ul>
+                </article>
+
+                <aside class="panel panel-dia" aria-labelledby="tituloDia">
+                    <div class="panel__cabecera">
+                        <h3 id="tituloDia">Citas del día</h3>
+                        <p class="panel__resumen" id="resumenDia"></p>
+                    </div>
+                    <div class="lista-tarjetas" id="listaDia"></div>
+                    <button class="boton boton--primario boton--completo" id="botonReservarDia"
+                            type="button">Reservar en esta fecha</button>
+                </aside>
+
+            </div>
+        </section>
+
+        <!-- FORMULARIO DE RESERVAS -->
+        <section class="seccion" id="nueva-reserva" aria-labelledby="tituloReserva">
+            <h2 class="seccion__titulo" id="tituloReserva">Gestión de reservas</h2>
+            <div class="panel">
+                <div class="banner-edicion" id="bannerEdicion" hidden>
+                    <strong>Modo edición:</strong> <span id="textoEdicion"></span>
+                </div>
+
+                <form id="formReserva" novalidate>
+                    <div class="formulario-rejilla">
+                        <div class="campo">
+                            <label for="reservaCliente">Cliente</label>
+                            <select id="reservaCliente" name="cliente">
+                                <option value="">Seleccione un cliente</option>
+                            </select>
+                            <small class="error-campo" id="error-reservaCliente"></small>
+                        </div>
+
+                        <div class="campo">
+                            <label for="reservaFecha">Fecha</label>
+                            <input type="date" id="reservaFecha" name="fecha">
+                            <small class="error-campo" id="error-reservaFecha"></small>
+                        </div>
+
+                        <div class="campo">
+                            <label for="reservaHora">Hora</label>
+                            <select id="reservaHora" name="hora">
+                                <option value="">Primero seleccione una fecha</option>
+                            </select>
+                            <small class="error-campo" id="error-reservaHora"></small>
+                        </div>
+
+                        <div class="campo">
+                            <label for="reservaServicio">Servicio</label>
+                            <select id="reservaServicio" name="servicio">
+                                <option value="">Seleccione un servicio</option>
+                            </select>
+                            <small class="error-campo" id="error-reservaServicio"></small>
+                        </div>
+
+                        <div class="campo">
+                            <label for="reservaEstado">Estado</label>
+                            <select id="reservaEstado" name="estado">
+                                <option value="pendiente" selected>Pendiente</option>
+                                <option value="confirmada">Confirmada</option>
+                                <option value="cancelada">Cancelada</option>
+                            </select>
+                            <small class="error-campo" id="error-reservaEstado"></small>
+                        </div>
+
+                        <div class="campo campo--ancho">
+                            <label for="reservaObservaciones">Observaciones (opcional)</label>
+                            <textarea id="reservaObservaciones" name="observaciones" rows="3"
+                                      maxlength="250"
+                                      placeholder="Ej.: primera consulta..."></textarea>
+                            <small class="error-campo" id="error-reservaObservaciones"></small>
+                        </div>
+                    </div>
+
+                    <p class="aviso aviso--info" id="avisoDisponibilidad" role="status"></p>
+
+                    <div class="horarios" id="rejillaHorarios" role="group"
+                         aria-label="Horarios del día seleccionado"></div>
+                    <ul class="leyenda leyenda--horarios" aria-label="Leyenda de horarios">
+                        <li><span class="muestra muestra--libre"></span> Libre</li>
+                        <li><span class="muestra muestra--ocupado"></span> Ocupado</li>
+                        <li><span class="muestra muestra--pasado"></span> Hora pasada</li>
+                        <li><span class="muestra muestra--elegido"></span> Seleccionado</li>
+                    </ul>
+
+                    <div class="acciones-formulario">
+                        <button class="boton boton--primario" id="botonGuardarReserva" type="submit">
+                            Guardar reserva
+                        </button>
+                        <button class="boton boton--secundario" id="botonLimpiarReserva" type="button">
+                            Limpiar formulario
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- LISTADO DE RESERVAS CON FILTROS Y ORDENAMIENTO -->
+        <section class="seccion" id="listado" aria-labelledby="tituloListado">
+            <h2 class="seccion__titulo" id="tituloListado">Listado de reservas</h2>
+            <div class="panel">
+                <div class="filtros">
+                    <div class="campo">
+                        <label for="filtroTexto">Buscar</label>
+                        <input type="search" id="filtroTexto" placeholder="Nombre, documento o servicio">
+                    </div>
+                    <div class="campo">
+                        <label for="filtroEstado">Estado</label>
+                        <select id="filtroEstado">
+                            <option value="todos">Todos</option>
+                            <option value="pendiente">Pendientes</option>
+                            <option value="confirmada">Confirmadas</option>
+                            <option value="cancelada">Canceladas</option>
+                        </select>
+                    </div>
+                    <div class="campo">
+                        <label for="filtroServicio">Servicio</label>
+                        <select id="filtroServicio">
+                            <option value="todos">Todos los servicios</option>
+                        </select>
+                    </div>
+                    <div class="campo">
+                        <label for="filtroFecha">Fecha</label>
+                        <input type="date" id="filtroFecha">
+                    </div>
+                    <div class="campo">
+                        <label for="ordenarPor">Ordenar por</label>
+                        <select id="ordenarPor">
+                            <option value="fecha-asc">Fecha (más próxima primero)</option>
+                            <option value="fecha-desc">Fecha (más lejana primero)</option>
+                            <option value="cliente">Cliente (A - Z)</option>
+                            <option value="estado">Estado</option>
+                        </select>
+                    </div>
+                    <div class="campo campo--boton">
+                        <button class="boton boton--secundario" id="botonLimpiarFiltros" type="button">
+                            Limpiar filtros
+                        </button>
+                    </div>
+                </div>
+                <p class="contador" id="contadorListado" aria-live="polite"></p>
+                <div class="lista-tarjetas lista-tarjetas--rejilla" id="listaReservas"></div>
+            </div>
+        </section>
+
+        <!-- REGISTRO DE CLIENTES -->
+        <section class="seccion" id="clientes" aria-labelledby="tituloClientes">
+            <h2 class="seccion__titulo" id="tituloClientes">Registro de clientes</h2>
+            <div class="rejilla-clientes">
+
+                <div class="panel">
+                    <h3 class="panel__subtitulo" id="tituloFormCliente">Nuevo cliente</h3>
+                    <form id="formCliente" novalidate>
+                        <div class="campo">
+                            <label for="clienteNombre">Nombre completo</label>
+                            <input type="text" id="clienteNombre" name="nombre" maxlength="60"
+                                   autocomplete="off" placeholder="Ej.: Laura Valentina Ríos">
+                            <small class="error-campo" id="error-clienteNombre"></small>
+                        </div>
+                        <div class="campo">
+                            <label for="clienteDocumento">Documento (ficticio)</label>
+                            <input type="text" id="clienteDocumento" name="documento" maxlength="12"
+                                   inputmode="numeric" autocomplete="off"
+                                   placeholder="Entre 6 y 12 dígitos">
+                            <small class="error-campo" id="error-clienteDocumento"></small>
+                        </div>
+                        <div class="campo">
+                            <label for="clienteCorreo">Correo electrónico</label>
+                            <input type="email" id="clienteCorreo" name="correo" autocomplete="off"
+                                   placeholder="nombre@ejemplo.com">
+                            <small class="error-campo" id="error-clienteCorreo"></small>
+                        </div>
+                        <div class="campo">
+                            <label for="clienteTelefono">Teléfono</label>
+                            <input type="tel" id="clienteTelefono" name="telefono" maxlength="14"
+                                   autocomplete="off" placeholder="Ej.: 3105551234">
+                            <small class="error-campo" id="error-clienteTelefono"></small>
+                        </div>
+                        <div class="campo">
+                            <label for="clienteServicio">Servicio solicitado</label>
+                            <select id="clienteServicio" name="servicio">
+                                <option value="">Seleccione un servicio</option>
+                            </select>
+                            <small class="error-campo" id="error-clienteServicio"></small>
+                        </div>
+                        <div class="acciones-formulario">
+                            <button class="boton boton--primario" id="botonGuardarCliente" type="submit">
+                                Registrar cliente
+                            </button>
+                            <button class="boton boton--secundario" id="botonLimpiarCliente" type="button">
+                                Limpiar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="panel">
+                    <h3 class="panel__subtitulo">Clientes registrados</h3>
+                    <p class="contador" id="contadorClientes" aria-live="polite"></p>
+                    <div class="lista-tarjetas lista-tarjetas--rejilla" id="listaClientes"></div>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <footer class="pie">
+        <div class="contenedor pie__interior">
+            <p><strong>Universidad de Caldas</strong> · Programación Web Creativa II</p>
+            <p>Taller 18 · Sistema de reservas y citas · HTML5, CSS3 y JavaScript</p>
+        </div>
+    </footer>
+
+    <div class="mensaje" id="mensaje" role="status" aria-live="polite"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>

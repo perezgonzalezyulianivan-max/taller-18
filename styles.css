@@ -1,0 +1,1033 @@
+/* ==========================================================================
+   TALLER 18 · SISTEMA DE RESERVAS Y CITAS
+   Universidad de Caldas · Programación Web Creativa II
+   Paleta: azul, blanco, celeste y verde
+   ========================================================================== */
+
+/* 1. VARIABLES Y REINICIO ------------------------------------------------- */
+:root {
+    --azul-900: #0f2a5c;
+    --azul-700: #1e40af;
+    --azul-600: #1d4ed8;
+    --azul-500: #2563eb;
+    --celeste-50: #f0f9ff;
+    --celeste-100: #e0f2fe;
+    --celeste-200: #bae6fd;
+    --celeste-400: #38bdf8;
+    --verde-700: #15803d;
+    --verde-600: #16a34a;
+    --verde-100: #dcfce7;
+    --ambar-600: #d97706;
+    --ambar-100: #fef3c7;
+    --rojo-600: #dc2626;
+    --rojo-100: #fee2e2;
+    --blanco: #ffffff;
+    --fondo: #f2f8fe;
+    --texto: #1e293b;
+    --texto-suave: #64748b;
+    --borde: #d6e4f3;
+    --sombra: 0 6px 20px rgba(30, 64, 175, 0.08);
+    --radio: 14px;
+    --radio-pequeno: 10px;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 90px;
+}
+
+body {
+    margin: 0;
+    font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--texto);
+    background: var(--fondo);
+}
+
+[hidden] {
+    display: none !important;
+}
+
+h1,
+h2,
+h3,
+h4 {
+    margin: 0;
+    line-height: 1.25;
+    color: var(--azul-900);
+}
+
+p {
+    margin: 0;
+}
+
+ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
+
+.contenedor {
+    width: min(1180px, 100% - 32px);
+    margin-inline: auto;
+}
+
+.saltar-contenido {
+    position: absolute;
+    left: -9999px;
+    top: 8px;
+    z-index: 200;
+    padding: 8px 14px;
+    border-radius: 8px;
+    background: var(--blanco);
+    color: var(--azul-700);
+}
+
+.saltar-contenido:focus {
+    left: 8px;
+}
+
+/* 2. ENCABEZADO Y MENÚ ---------------------------------------------------- */
+.encabezado {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--azul-700);
+    box-shadow: 0 2px 12px rgba(15, 42, 92, 0.25);
+}
+
+.encabezado__interior {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding-block: 12px;
+}
+
+.marca {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--blanco);
+    text-decoration: none;
+}
+
+.marca__icono {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: var(--verde-600);
+    font-size: 1.7rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.marca__texto {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+}
+
+.marca__texto small {
+    color: var(--celeste-200);
+    font-size: 0.8rem;
+}
+
+.menu__lista {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.menu__lista a {
+    display: block;
+    padding: 8px 14px;
+    border-radius: 999px;
+    color: var(--celeste-100);
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.menu__lista a:hover,
+.menu__lista a:focus-visible {
+    background: var(--blanco);
+    color: var(--azul-700);
+}
+
+.menu-boton {
+    display: none;
+    padding: 8px 16px;
+    border: 1px solid var(--celeste-200);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--blanco);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* 3. PRESENTACIÓN --------------------------------------------------------- */
+.hero {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-top: 24px;
+    padding: 32px;
+    border-radius: var(--radio);
+    background: linear-gradient(120deg, var(--azul-600), var(--azul-500) 55%, var(--celeste-400));
+    color: var(--blanco);
+    box-shadow: var(--sombra);
+}
+
+.hero__texto {
+    flex: 1 1 380px;
+    display: grid;
+    gap: 10px;
+}
+
+.hero h1 {
+    color: var(--blanco);
+    font-size: clamp(1.6rem, 3vw, 2.3rem);
+}
+
+.hero__etiqueta {
+    width: fit-content;
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: var(--verde-600);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.hero__acciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+/* 4. SECCIONES Y PANELES -------------------------------------------------- */
+.seccion {
+    margin-top: 32px;
+}
+
+.seccion__titulo {
+    margin-bottom: 14px;
+    font-size: 1.5rem;
+}
+
+.panel {
+    padding: 20px;
+    border: 1px solid var(--borde);
+    border-radius: var(--radio);
+    background: var(--blanco);
+    box-shadow: var(--sombra);
+}
+
+.panel__subtitulo {
+    margin-bottom: 14px;
+    font-size: 1.15rem;
+}
+
+.panel__cabecera {
+    margin-bottom: 14px;
+}
+
+.panel__resumen {
+    margin-top: 4px;
+    color: var(--texto-suave);
+    font-size: 0.92rem;
+}
+
+.rejilla-principal {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+    gap: 20px;
+    align-items: start;
+}
+
+.rejilla-clientes {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr);
+    gap: 20px;
+    align-items: start;
+}
+
+/* 5. BOTONES -------------------------------------------------------------- */
+.boton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 18px;
+    border: 1px solid transparent;
+    border-radius: var(--radio-pequeno);
+    font-weight: 600;
+    line-height: 1.2;
+    cursor: pointer;
+    transition: transform 0.15s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.boton:hover {
+    transform: translateY(-1px);
+}
+
+.boton:focus-visible,
+.calendario__dia:focus-visible,
+.horario:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline: 3px solid var(--celeste-400);
+    outline-offset: 2px;
+}
+
+.boton--primario {
+    background: var(--azul-600);
+    color: var(--blanco);
+}
+
+.boton--primario:hover {
+    background: var(--azul-700);
+}
+
+.boton--secundario {
+    border-color: var(--celeste-200);
+    background: var(--celeste-100);
+    color: var(--azul-700);
+}
+
+.boton--secundario:hover {
+    background: var(--celeste-200);
+}
+
+.boton--exito {
+    background: var(--verde-600);
+    color: var(--blanco);
+}
+
+.boton--exito:hover {
+    background: var(--verde-700);
+}
+
+.boton--peligro {
+    border-color: var(--rojo-100);
+    background: var(--blanco);
+    color: var(--rojo-600);
+}
+
+.boton--peligro:hover {
+    background: var(--rojo-100);
+}
+
+.boton--blanco {
+    background: var(--blanco);
+    color: var(--azul-700);
+}
+
+.boton--contorno {
+    border-color: var(--blanco);
+    background: transparent;
+    color: var(--blanco);
+}
+
+.boton--contorno:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.boton--icono {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    background: var(--celeste-100);
+    color: var(--azul-700);
+    font-size: 1.5rem;
+}
+
+.boton--pequeno {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+}
+
+.boton--completo {
+    width: 100%;
+    margin-top: 14px;
+}
+
+.boton:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* 6. DASHBOARD ------------------------------------------------------------ */
+.estadisticas {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.tarjeta-estadistica {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 18px;
+    border: 1px solid var(--borde);
+    border-left-width: 6px;
+    border-radius: var(--radio);
+    background: var(--blanco);
+    box-shadow: var(--sombra);
+}
+
+.tarjeta-estadistica__etiqueta {
+    color: var(--texto-suave);
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.tarjeta-estadistica__valor {
+    font-size: 2.2rem;
+    line-height: 1;
+    color: var(--azul-900);
+}
+
+.tarjeta-estadistica--total {
+    border-left-color: var(--azul-600);
+}
+
+.tarjeta-estadistica--hoy {
+    border-left-color: var(--celeste-400);
+}
+
+.tarjeta-estadistica--pendiente {
+    border-left-color: var(--ambar-600);
+}
+
+.tarjeta-estadistica--confirmada {
+    border-left-color: var(--verde-600);
+}
+
+.tarjeta-estadistica--cancelada {
+    border-left-color: var(--rojo-600);
+}
+
+/* 7. CALENDARIO ----------------------------------------------------------- */
+.calendario__barra {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.calendario__titulo {
+    flex: 1;
+    text-align: center;
+    font-size: 1.25rem;
+}
+
+.calendario__rejilla {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 6px;
+}
+
+.calendario__dia-semana {
+    padding: 6px 0;
+    text-align: center;
+    color: var(--azul-700);
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.calendario__dia {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    min-height: 66px;
+    padding: 8px 4px 6px;
+    border: 1px solid var(--borde);
+    border-radius: var(--radio-pequeno);
+    background: var(--blanco);
+    color: var(--texto);
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+}
+
+.calendario__dia:hover {
+    border-color: var(--celeste-400);
+    background: var(--celeste-50);
+    transform: translateY(-1px);
+}
+
+.calendario__numero {
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    font-weight: 600;
+}
+
+.calendario__dia.es-pasado {
+    background: #f6f9fc;
+    color: var(--texto-suave);
+}
+
+.calendario__dia.con-reservas {
+    border-color: var(--celeste-400);
+    background: var(--celeste-50);
+}
+
+.calendario__dia.es-hoy {
+    border: 2px solid var(--azul-600);
+}
+
+.calendario__dia.es-hoy .calendario__numero {
+    background: var(--azul-600);
+    color: var(--blanco);
+}
+
+.calendario__dia.es-seleccionado {
+    border-color: var(--verde-600);
+    background: var(--verde-100);
+    box-shadow: 0 0 0 2px var(--verde-600);
+}
+
+.calendario__puntos {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 3px;
+    min-height: 8px;
+}
+
+.calendario__contador {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    min-width: 18px;
+    padding: 0 5px;
+    border-radius: 999px;
+    background: var(--azul-600);
+    color: var(--blanco);
+    font-size: 0.7rem;
+    font-weight: 700;
+    line-height: 18px;
+    text-align: center;
+}
+
+.punto {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.punto--confirmada {
+    background: var(--verde-600);
+}
+
+.punto--pendiente {
+    background: var(--ambar-600);
+}
+
+.punto--cancelada {
+    background: var(--rojo-600);
+}
+
+.leyenda {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 18px;
+    margin-top: 16px;
+    color: var(--texto-suave);
+    font-size: 0.85rem;
+}
+
+.leyenda li {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.leyenda__hoy {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border: 2px solid var(--azul-600);
+    border-radius: 4px;
+}
+
+/* 8. TARJETAS DE RESERVA Y CLIENTE ---------------------------------------- */
+.lista-tarjetas {
+    display: grid;
+    gap: 12px;
+}
+
+.lista-tarjetas--rejilla {
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+}
+
+.tarjeta-reserva {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 14px;
+    border: 1px solid var(--borde);
+    border-left-width: 6px;
+    border-radius: var(--radio-pequeno);
+    background: var(--blanco);
+}
+
+.tarjeta-reserva--confirmada {
+    border-left-color: var(--verde-600);
+    background: #f7fdf9;
+}
+
+.tarjeta-reserva--pendiente {
+    border-left-color: var(--ambar-600);
+    background: #fffdf5;
+}
+
+.tarjeta-reserva--cancelada {
+    border-left-color: var(--rojo-600);
+    background: #fff8f8;
+}
+
+.tarjeta-reserva--cancelada .tarjeta-reserva__cliente,
+.tarjeta-reserva--cancelada .tarjeta-reserva__servicio {
+    text-decoration: line-through;
+    color: var(--texto-suave);
+}
+
+.tarjeta-reserva__cabecera {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.tarjeta-reserva__hora {
+    color: var(--azul-700);
+    font-size: 0.95rem;
+    font-weight: 700;
+}
+
+.tarjeta-reserva__cliente {
+    font-size: 1.05rem;
+}
+
+.tarjeta-reserva__servicio {
+    color: var(--azul-600);
+    font-weight: 600;
+}
+
+.tarjeta-reserva__detalle {
+    color: var(--texto-suave);
+    font-size: 0.88rem;
+}
+
+.tarjeta-reserva__acciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 6px;
+}
+
+.tarjeta-reserva__nota {
+    color: var(--texto-suave);
+    font-size: 0.85rem;
+    font-style: italic;
+}
+
+.tarjeta-cliente {
+    border-left-color: var(--celeste-400);
+    background: var(--celeste-50);
+}
+
+.etiqueta {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+}
+
+.etiqueta--confirmada {
+    background: var(--verde-100);
+    color: var(--verde-700);
+}
+
+.etiqueta--pendiente {
+    background: var(--ambar-100);
+    color: var(--ambar-600);
+}
+
+.etiqueta--cancelada {
+    background: var(--rojo-100);
+    color: var(--rojo-600);
+}
+
+.mensaje-vacio {
+    padding: 22px 14px;
+    border: 2px dashed var(--celeste-200);
+    border-radius: var(--radio-pequeno);
+    background: var(--celeste-50);
+    color: var(--texto-suave);
+    text-align: center;
+}
+
+/* 9. FORMULARIOS ---------------------------------------------------------- */
+.formulario-rejilla {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.campo {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 14px;
+}
+
+.formulario-rejilla .campo {
+    margin-bottom: 0;
+}
+
+.campo--ancho {
+    grid-column: 1 / -1;
+}
+
+.campo--boton {
+    justify-content: flex-end;
+}
+
+label {
+    color: var(--azul-900);
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+input,
+select,
+textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--borde);
+    border-radius: var(--radio-pequeno);
+    background: var(--blanco);
+    color: var(--texto);
+}
+
+input:hover,
+select:hover,
+textarea:hover {
+    border-color: var(--celeste-400);
+}
+
+textarea {
+    resize: vertical;
+}
+
+select:disabled {
+    background: #eef3f8;
+    color: var(--texto-suave);
+    cursor: not-allowed;
+}
+
+.es-invalido {
+    border-color: var(--rojo-600);
+    background: #fffafa;
+}
+
+.error-campo {
+    min-height: 1em;
+    color: var(--rojo-600);
+    font-size: 0.82rem;
+    font-weight: 600;
+}
+
+.acciones-formulario {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+.banner-edicion {
+    margin-bottom: 16px;
+    padding: 12px 16px;
+    border: 1px solid var(--celeste-400);
+    border-left-width: 6px;
+    border-radius: var(--radio-pequeno);
+    background: var(--celeste-100);
+    color: var(--azul-900);
+}
+
+.aviso {
+    margin-top: 16px;
+    padding: 10px 14px;
+    border-radius: var(--radio-pequeno);
+    font-size: 0.92rem;
+    font-weight: 600;
+}
+
+.aviso--info {
+    background: var(--celeste-100);
+    color: var(--azul-700);
+}
+
+.aviso--exito {
+    background: var(--verde-100);
+    color: var(--verde-700);
+}
+
+.aviso--error {
+    background: var(--rojo-100);
+    color: var(--rojo-600);
+}
+
+/* 10. REJILLA DE HORARIOS ------------------------------------------------- */
+.horarios {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.horario {
+    padding: 8px 6px;
+    border: 1px solid transparent;
+    border-radius: var(--radio-pequeno);
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.horario--libre {
+    border-color: var(--verde-600);
+    background: var(--verde-100);
+    color: var(--verde-700);
+}
+
+.horario--libre:hover {
+    transform: translateY(-1px);
+    background: #bbf7d0;
+}
+
+.horario--ocupado {
+    border-color: var(--rojo-100);
+    background: var(--rojo-100);
+    color: var(--rojo-600);
+    text-decoration: line-through;
+    cursor: not-allowed;
+}
+
+.horario--pasado {
+    border-color: var(--borde);
+    background: #eef3f8;
+    color: var(--texto-suave);
+    cursor: not-allowed;
+}
+
+.horario.horario--elegido {
+    border-color: var(--azul-600);
+    background: var(--azul-600);
+    color: var(--blanco);
+}
+
+.muestra {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border-radius: 4px;
+}
+
+.muestra--libre {
+    background: var(--verde-100);
+    border: 1px solid var(--verde-600);
+}
+
+.muestra--ocupado {
+    background: var(--rojo-100);
+    border: 1px solid var(--rojo-600);
+}
+
+.muestra--pasado {
+    background: #eef3f8;
+    border: 1px solid var(--borde);
+}
+
+.muestra--elegido {
+    background: var(--azul-600);
+}
+
+/* 11. FILTROS Y LISTADOS -------------------------------------------------- */
+.filtros {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 14px;
+    align-items: end;
+}
+
+.contador {
+    margin: 4px 0 14px;
+    color: var(--texto-suave);
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+/* 12. MENSAJES FLOTANTES Y PIE ------------------------------------------- */
+.mensaje {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 300;
+    max-width: min(380px, 100% - 40px);
+    padding: 14px 18px;
+    border-radius: var(--radio-pequeno);
+    background: var(--verde-600);
+    color: var(--blanco);
+    font-weight: 600;
+    box-shadow: 0 10px 28px rgba(15, 42, 92, 0.3);
+    opacity: 0;
+    transform: translateY(20px);
+    pointer-events: none;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.mensaje--visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.mensaje--error {
+    background: var(--rojo-600);
+}
+
+.mensaje--info {
+    background: var(--azul-600);
+}
+
+.pie {
+    margin-top: 48px;
+    padding: 22px 0;
+    background: var(--azul-900);
+    color: var(--celeste-100);
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+.pie__interior {
+    display: grid;
+    gap: 4px;
+}
+
+/* 13. DISEÑO RESPONSIVE --------------------------------------------------- */
+@media (max-width: 1024px) {
+    .estadisticas {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .rejilla-principal,
+    .rejilla-clientes {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 760px) {
+    .menu-boton {
+        display: inline-block;
+    }
+
+    .menu {
+        display: none;
+        width: 100%;
+    }
+
+    .menu.menu--abierto {
+        display: block;
+    }
+
+    .menu__lista {
+        flex-direction: column;
+    }
+
+    .formulario-rejilla {
+        grid-template-columns: 1fr;
+    }
+
+    .hero {
+        padding: 22px;
+    }
+}
+
+@media (max-width: 520px) {
+    .estadisticas {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .calendario__rejilla {
+        gap: 3px;
+    }
+
+    .calendario__dia {
+        min-height: 56px;
+        padding: 6px 2px 4px;
+    }
+
+    .calendario__numero {
+        width: 26px;
+        height: 26px;
+        font-size: 0.9rem;
+    }
+
+    .punto {
+        width: 6px;
+        height: 6px;
+    }
+
+    .panel {
+        padding: 14px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        transition: none !important;
+    }
+}
